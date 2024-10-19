@@ -3,31 +3,29 @@ import pandas as pd
 from preprocessing import create_lag_features
 from trees import train
 
-def predict_equador(item, city, state):
-    df = pd.read_csv('data/data.csv')
+def predict_equador(item):
+    df = pd.read_csv('data/equador.csv')
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values(by='date')
 
-    data = df
+    df = df.loc[df['family'] == item]
+    dates = df['date'].values
+    df = df.drop(columns=['date'])
+    df = df.drop(columns=['family'])
 
-    data = data.loc[data['family'] == item]
-    data = data.loc[data['city'] == city]
-    data = data.loc[data['state'] == state]
+    for state in df['state'].unique():
+        df = df.loc[df['state'] == state]
+        for city in df['city'].unique():
+            df = df.loc[df['city'] == city]
+            data = df.drop(columns=['state'])
+            data = data.drop(columns=['city'])
 
-    dates = data['date'].values
-    data = data.drop(columns=['date'])
-    data = data.drop(columns=['family'])
-    data = data.drop(columns=['city'])
-    data = data.drop(columns=['state'])
+            data = create_lag_features(data, column='unit_sales', lags=10)
 
-    data = create_lag_features(data, column='unit_sales', lags=10)
+            X, y = data.loc[:, data.columns != 'unit_sales'].values, data['unit_sales'].to_numpy()
 
-    X, y = data.loc[:, data.columns != 'unit_sales'].values, data['unit_sales'].to_numpy()
+            split = int(0.8 * len(X))
 
-    print(X.shape)
+            X_train, X_test, y_train, y_test = X[:split], X[split:], y[:split], y[split:]
 
-    split = int(0.8 * len(X))
-
-    X_train, X_test, y_train, y_test = X[:split], X[split:], y[:split], y[split:]
-
-    train(X_train, X_test, y_train, y_test)
+            train(X_train, X_test, y_train, y_test)

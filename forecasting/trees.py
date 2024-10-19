@@ -5,7 +5,7 @@ import xgboost as xgb
 from sklearn.metrics import mean_squared_error
 
 
-def train(X_train, X_test, y_train, y_test):
+def train(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test: np.ndarray) -> np.ndarray:
     train_dmatrix = xgb.DMatrix(X_train, label=y_train)
     test_dmatrix = xgb.DMatrix(X_test, label=y_test)
 
@@ -29,3 +29,5 @@ def train(X_train, X_test, y_train, y_test):
     plt.legend()
     plt.title("Actual vs Predicted Time Series Values")
     plt.show()
+
+    return y_pred
