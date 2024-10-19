@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 
-class MyDataset(Dataset):
+class SalesDataset(Dataset):
     def __init__(self, X, y):
         self.X = X
         self.y = y

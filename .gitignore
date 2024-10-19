@@ -167,3 +167,6 @@ data
 data/
 .data
 .data/
+
+test.ipynb
+test.py

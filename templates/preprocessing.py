@@ -5,7 +5,7 @@ import pandas as pd
 import torch
 
 
-def normalize_numeric_minmax(data: pd.DataFrame, range_min: int = 0, range_max: int = 0) -> pd.DataFrame:
+def normalize_numeric_minmax(data: pd.DataFrame, range_min: int = 0, range_max: int = 1) -> pd.DataFrame:
     '''
     Automatically detects numeric columns and minmax normalizes them
     '''
