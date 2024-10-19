@@ -5,7 +5,11 @@ import pandas as pd
 import torch
 
 
-def create_sequences(data: pd.DataFrame, seq_length: int, target_name: str) -> Tuple[torch.Tensor, torch.Tensor]:
+def normalize_numeric(data: pd.DataFrame, min: int = 0, max: int = 0):
+    pass
+
+
+def create_sequences(data: pd.DataFrame, seq_length: int, target_name: str, prediction_horizon: int) -> Tuple[torch.Tensor, torch.Tensor]:
     '''
     Returns a pair: (feature_sequences, target_sequences) of torch tensors
     '''
@@ -17,7 +21,7 @@ def create_sequences(data: pd.DataFrame, seq_length: int, target_name: str) -> T
         seq = data.iloc[i:i + seq_length].drop(columns=[target_name]).values
         sequences.append(seq)
 
-        tgt = data.iloc[i:i + seq_length][target_name]
+        tgt = data.iloc[i + seq_length:i + seq_length + prediction_horizon][target_name]
         targets.append(tgt)
 
     return torch.tensor(sequences), torch.tensor(targets)
