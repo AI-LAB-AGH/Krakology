@@ -4,7 +4,8 @@ import pandas as pd
 from web_scraping.api_keys import *
 from openai import OpenAI
 from web_scraping.gpt_prompt import *
-
+from random import randint
+from datetime import datetime
 google_maps_api_key = get_google_maps_api_key()
 openai_api_key = get_gpt_api_key()
 
@@ -108,12 +109,70 @@ class DataPipeline:
         row_str = ", ".join([f"{col}: {row[col]}" for col in ["artist", "city", "venue", "description"]])
         return row_str
 
+    def merge_event_info_with_dataset(self, sales_df_path, concerts_df_path):
+        zabka_sales_df = pd.read_csv(sales_df_path)
+        concerts_df = pd.read_csv(concerts_df_path)
+
+        zabka_sales_df["event_ID"] = -1
+
+        nearest_found = False
+
+        for i, sale_row in zabka_sales_df.iterrows():
+            store_x = sale_row["store_localisation_x"]
+            store_y = sale_row["store_localisation_y"]
+            zabka_sales_df.at[i, "event_ID"] = -1
+            zabka_sales_df.at[i, "event"] = -1
+            zabka_sales_df.at[i, "min_people"] = -1
+            zabka_sales_df.at[i, "max_people"] = -1
+            zabka_sales_df.at[i, "event_localisation_x"] = -1
+            zabka_sales_df.at[i, "event_localisation_y"] = -1
+
+
+            for j, event_row in concerts_df.iterrows():
+                event_x = event_row["latitude"]
+                event_y = event_row["longitude"]
+
+                if event_row["date"].strip() == sale_row["date"].strip():
+                    if event_x >= store_x - 0.0045 and event_x <= store_x + 0.0045 and event_y <= store_y + 0.007 and event_y >= store_y - 0.007:
+                        nearest_found = True
+                        nearest_event_id = j
+                        min_people = event_row["min_people"]
+                        max_people = event_row["max_people"]
+                        break
+
+            if nearest_found == True:
+                zabka_sales_df.at[i, "event"] = 1
+                zabka_sales_df.at[i, "min_people"] = min_people
+                zabka_sales_df.at[i, "max_people"] = max_people
+                zabka_sales_df.at[i, "event_ID"] = nearest_event_id
+                nearest_found = False
+
+        zabka_sales_df.to_csv("zabka_2024_sales_updated.csv", index=False)
+
+    def clean_dates_in_dataset(self):
+        df = pd.read_csv(self.file_path)
+        df["date"] = df["date"].apply(self.reformat_date)
+        df.to_csv(self.file_path)
+
+    def reformat_date(self, date_str):
+        date_str = date_str.replace("r.", "").strip()
+        try:
+            date_obj = datetime.strptime(date_str, "%d.%m.%Y")
+            return date_obj.strftime("%d.%m.%Y")
+        except:
+            return "01.01.1970"
+
+
+
 
 
 def main():
-    df = pd.read_csv("concerts_with_scales.csv")
+    pipeline = DataPipeline("", "", "")
+    pipeline.merge_event_info_with_dataset()
 
 if __name__ == "__main__":
     main()
+
+
 
 
