@@ -6,7 +6,7 @@ class SalesDataset(Dataset):
         self.y = y
     
     def __len__(self):
-        return self.X.size[0]
+        return len(self.X)
 
     def __repr__(self) -> str:
         return "Class to load custom data from local source"

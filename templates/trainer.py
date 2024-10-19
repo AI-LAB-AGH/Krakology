@@ -18,22 +18,23 @@ class MyTrainer():
         "Tu będzie trenowanie modelu -> pętla po epokach, batchach, itd."
         return
 
-def train(model: nn.Module, dataloader: torch.utils.data.DataLoader, n_epochs: int, lr: float = 0.001):
-    optimizer = AdamW(model.parameters(), lr=lr)
-    loss = nn.MSELoss()
-
+def train(model: nn.Module, dataloader: torch.utils.data.DataLoader, test_loader, optimizer, criterion, n_epochs: int, lr: float = 0.001):
     model.train()
 
     for epoch in range(n_epochs):
         epoch_loss = 0
 
-        for X_batch, y_batch in tqdm(dataloader, desc=f'Epoch {epoch}, loss: {epoch_loss}'):
+        for X_batch, y_batch in tqdm(dataloader, desc=f'Epoch {epoch}'):
             optimizer.zero_grad()
             y_pred = model(X_batch)
-            loss = loss(y_pred, y_batch)
+            y_pred = torch.squeeze(y_pred)
+            loss = criterion(y_pred, y_batch)
             loss.backward()
             optimizer.step()
             epoch_loss += loss.item()
+        epoch_loss /= len(dataloader)
+        test_loss = test(model, test_loader)
+        print(f'Epoch {epoch} | train_loss: {epoch_loss} | test_loss: {test_loss}')
 
 
 def test(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader):
@@ -45,6 +46,7 @@ def test(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader):
     with torch.no_grad():
         for X_batch, y_batch in tqdm(dataloader, desc="Evaluating"):
             y_pred = model(X_batch)
+            y_pred = torch.squeeze(y_pred)
             loss = criterion(y_pred, y_batch)
             test_loss += loss.item()
     avg_test_loss = test_loss / len(dataloader)
