@@ -5,8 +5,14 @@ import pandas as pd
 import torch
 
 
-def normalize_numeric(data: pd.DataFrame, min: int = 0, max: int = 0):
-    pass
+def normalize_numeric_minmax(data: pd.DataFrame, range_min: int = 0, range_max: int = 0) -> pd.DataFrame:
+    '''
+    Automatically detects numeric columns and minmax normalizes them
+    '''
+    scaler = MinMaxScaler(feature_range=(range_min, range_max))
+    numeric_columns = data.select_dtypes(include=['float64', 'int64']).columns
+    data[numeric_columns] = scaler.fit_transform(data[numeric_columns])
+    return data
 
 
 def create_sequences(data: pd.DataFrame, seq_length: int, target_name: str, prediction_horizon: int) -> Tuple[torch.Tensor, torch.Tensor]:
