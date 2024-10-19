@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
+from web_scraping.api_keys import *
 
-api_key = 'AIzaSyDuNZvCLYEJEnx-vjvECR4H1ge-I6e7p8s'
+google_maps_api_key = get_google_maps_api_key()
+openai_api_key = get_gpt_api_key()
 
 class DataPipeline:
     def __init__(self, link, file_path):
@@ -48,7 +50,7 @@ class DataPipeline:
         dataframe.to_csv(self.file_path, encoding="utf-8")
 
     def get_coordinates(self, location):
-        url = f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={api_key}"
+        url = f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={google_maps_api_key}"
         response = requests.get(url)
         data = response.json()
 
