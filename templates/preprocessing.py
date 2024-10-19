@@ -10,7 +10,7 @@ def normalize_numeric_minmax(data: pd.DataFrame, range_min: int = 0, range_max: 
     Automatically detects numeric columns and minmax normalizes them
     '''
     scaler = MinMaxScaler(feature_range=(range_min, range_max))
-    numeric_columns = data.select_dtypes(include=['float64', 'int64']).columns
+    numeric_columns = data.select_dtypes(include=['float64']).columns
     data[numeric_columns] = scaler.fit_transform(data[numeric_columns])
     return data
 
