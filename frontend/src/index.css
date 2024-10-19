@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+html {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    @apply bg-hack-lily
+}
+
+.wrapper {
+    @apply flex flex-col w-full bg-hack-grey
+}
+
+.upload-text {
+    @apply text-white text-lg p-5 text-justify
+}
+
+.upload-filename {
+    @apply text-white text-lg m-auto tracking-wide
+}
+
+.upload-buttons {
+    @apply flex flex-row justify-center w-full text-white mx-auto mb-2 mt-0
+}
+
+.button {
+    transition: all ease-in-out .3s;
+    border-radius: 35px;
+    @apply 
+    bg-hack-lily
+    text-white
+    text-xl
+    tracking-wide
+    border-white
+    border-2
+    p-4
+    mx-2 my-10
+    w-36
+}
+
+.button:hover {
+    cursor: pointer;
+    @apply bg-hack-grey text-hack-lily border-white 
+}
+
+.button:disabled {
+    cursor: none;
+    @apply bg-hack-grey text-hack-lily border-white 
+}
