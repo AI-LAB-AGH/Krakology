@@ -2,18 +2,24 @@ from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 from web_scraping.api_keys import *
+from openai import OpenAI
+from web_scraping.gpt_prompt import *
 
 google_maps_api_key = get_google_maps_api_key()
 openai_api_key = get_gpt_api_key()
 
 class DataPipeline:
-    def __init__(self, link, file_path):
+    def __init__(self, link, file_path, model):
         self.link = link
         self.file_path = file_path
+        self.model = model
+        self.client = OpenAI(api_key=openai_api_key)
 
     def process_data(self):
         self.get_data()
         self.add_coordinates_to_dataset()
+        self.add_event_scale_to_dataset()
+
 
     def get_data(self):
         data = []
@@ -76,11 +82,38 @@ class DataPipeline:
         df.to_csv(self.file_path)
 
     def add_event_scale_to_dataset(self):
-        pass
+        minimums = []
+        maximums = []
+        df = pd.read_csv(self.file_path)
+        for i, _ in df.iterrows():
+            minimum, maximum = self.prompt_gpt(get_system(), self.df_row_as_string(df, i)).split("-")
+            minimums.append(minimum)
+            maximums.append(maximum)
+        df["min_people"] = minimums
+        df["max_people"] = maximums
+        df.to_csv(self.file_path)
+
+    def prompt_gpt(self, system, prompt) -> str:
+        completion = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system",
+                 "content": system},
+                {"role": "user", "content": prompt}]
+        )
+        return completion.choices[0].message.content
+
+    def df_row_as_string(self, df, row_index):
+        row = df.iloc[row_index]
+        row_str = ", ".join([f"{col}: {row[col]}" for col in ["artist", "city", "venue", "description"]])
+        return row_str
+
 
 
 def main():
-    pass
+    df = pd.read_csv("concerts_with_scales.csv")
 
 if __name__ == "__main__":
     main()
+
+
