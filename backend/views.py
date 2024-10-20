@@ -30,6 +30,8 @@ def fetch_events(request):
     sales_data = pd.read_csv('./backend/sales.csv')
 
     sales_data = sales_data[sales_data['product'] == category]
+    data_weak, data_good = process_events(sales_data)
+
     for idx in sales_data[sales_data['event_ID'] != -1]['event_ID'].unique():
         event = events_data[int(idx)]
         event['description'] = 'None'
@@ -38,7 +40,6 @@ def fetch_events(request):
     return JsonResponse({"events": events})
 
 
-    data_weak, data_good = process_events(data)
 
     generate_graph(data_weak)
     generate_graph(data_good)
