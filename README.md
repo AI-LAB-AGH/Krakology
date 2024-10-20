@@ -1,4 +1,5 @@
-# Integracja Modeli Predykcyjnych Popytu
+# Włączanie nieregularnych wydarzeń do prognoz popytu
+
 ## Team Krakology
 
 ### Funkcjonalności
