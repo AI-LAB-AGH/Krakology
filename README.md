@@ -1,6 +1,9 @@
 # Integracja Modeli Predykcyjnych Popytu
 ## Team Krakology
 
+### Funkcjonalności
+
+
 ### Użyte technologie
 - XGBoost
 - PyTorch
