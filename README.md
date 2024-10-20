@@ -20,10 +20,10 @@
 
 - **Nazwa zespołu**: Magic Lab
 - **Członkowie**:
-  - Piotr Błędowski - ML, Data Engineering
-  - Max Słota - webdev, visualizations
-  - Adam Stajek - Data Engineering, prompt engineering
-  - Maja Byrecka - wizualizacje, Data Engineering
+  - Piotr Błędowski - ML, eata engineering
+  - Max Słota - webdev, wizualizacje
+  - Adam Stajek - eata engineering, prompt engineering
+  - Maja Byrecka - wizualizacje, data engineering
   - Szymon Majdak - data engineering
 
 ## Szczegółowy opis projektu
