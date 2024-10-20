@@ -1,2 +1,2 @@
-# Krakology
-(Hackology)
+# Integracja Modeli Predykcyjnych Popytu
+## Team Krakology
