@@ -80,7 +80,7 @@ def process_events(data, start_date, end_date, days_to_extrapolate):
 
         csv_contents = zip(date_list_extrapolated, data_weak[i][1], data_good[i][1])
         
-        with open('backend/predictions.csv', 'w') as f:
+        with open(f'backend/predictions_{i}.csv', 'w') as f:
             f.write('date,unit_sales_x,unit_sales_y\n')
 
             for line in csv_contents:
