@@ -115,5 +115,6 @@ option {
 }
 
 .event-el {
+    font-size: 17px;
     @apply text-hack-grey my-2
 }

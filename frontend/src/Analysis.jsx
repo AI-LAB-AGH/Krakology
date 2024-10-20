@@ -10,6 +10,14 @@ const Analysis = ({ hide }) => {
     beverages: "Napoje",
     dairy: "Nabiał",
     eggs: "Jajka",
+    sweets: "Słodycze",
+    meat: "Wędliny",
+    cleaning_products: "Środki czystości",
+    vegetables: "Warzywa",
+    fruits: "Owoce",
+    chips: "Chipsy",
+    ice_cream: "Lody",
+    alcohol: "Alkohol",
   };
   const scales = {
     0: "Brak",
@@ -104,8 +112,8 @@ const Analysis = ({ hide }) => {
               id="start"
               name="trip-start"
               value={startDate}
-              min="2018-01-01"
-              max="2018-12-31"
+              min="2024-04-01"
+              max="2024-07-31"
               onChange={handleStartChange}
             />
             <br></br>
@@ -115,8 +123,8 @@ const Analysis = ({ hide }) => {
               id="end"
               name="trip-start"
               value={endDate}
-              min="2018-01-01"
-              max="2018-12-31"
+              min="2024-04-01"
+              max="2024-07-31"
               onChange={handleEndChange}
             />
             <br></br>
@@ -138,13 +146,14 @@ const Analysis = ({ hide }) => {
                       <b>Lokalizacja:</b> {event.venue}, {event.city}
                     </div>
                     <div className="event-el">
+                      <b>Data:</b> {event.date}
+                    </div>
+                    <div className="event-el">
                       <b>Skala wydarzenia:</b> {event.min_people} -{" "}
                       {event.max_people} osób
                     </div>
                     <div className="event-el">
-                      <b>Położenie punktu sprzedaży:</b> (
-                      {Math.round(event.latitude * 1000) / 1000},{" "}
-                      {Math.round(event.longitude * 1000) / 1000})
+                      <b>Punkt sprzedaży:</b> {event.store_id}
                     </div>
                   </div>
                 ))

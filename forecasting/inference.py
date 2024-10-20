@@ -1,7 +1,7 @@
 import pandas as pd
 
-from preprocessing import create_lag_features
-from trees import train
+from .preprocessing import create_lag_features
+from .trees import train
 
 
 def predict_equador(item):
@@ -41,8 +41,6 @@ def predict_poland(data_train, data_test, lag=10):
 
     preds = []
 
-    print(X_train['store_localisation_x'].unique())
-
     for x in X_train['store_localisation_x'].unique():
         X_train_ = X_train.loc[X_train['store_localisation_x'] == x]
         X_train_ = X_train_.drop(columns=['store_localisation_x'])
@@ -52,9 +50,6 @@ def predict_poland(data_train, data_test, lag=10):
         for idx, row in X_train_.iterrows():
             id = row['store_id']
             break
-
-        print(X_train_.shape)
-        print(X_train_.columns)
 
         if 'is_event' in X_train_.columns:
             X_train_ = create_lag_features(X_train_, column='is_event')
@@ -70,13 +65,9 @@ def predict_poland(data_train, data_test, lag=10):
         X_test_ = X_test_.drop(columns=['store_localisation_y'])
         X_test_ = X_test_.drop(columns=['product'])
 
-        print(f'Test shape pretransform: {X_test_.shape}')
-
         if 'is_event' in X_test_.columns:
             X_test_ = create_lag_features(X_test_, column='is_event')
         
-        print(f'Test shape posttransform: {X_test_.shape}')
-
         if 'min_people' in X_test_.columns:
             X_test_ = create_lag_features(X_test_, column='min_people')
         
