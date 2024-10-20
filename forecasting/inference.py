@@ -32,27 +32,34 @@ def predict_equador(item):
             y_pred = train(X_train, X_test, y_train, y_test)
 
 
-def predict_poland(item):
+def predict_poland(X_train, y_train, X_test, y_test, lag=10):
     df = pd.read_csv('data/equador.csv')
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values(by='date')
 
-    df = df.loc[df['family'] == item]
     dates = df['date'].values
     df = df.drop(columns=['date'])
-    df = df.drop(columns=['family'])
 
     for x in df['store_localisation_x'].unique():
         df = df.loc[df['store_localisation_x'] == x]
         data = df.drop(columns=['store_localisation_x'])
         data = data.drop(columns=['store_localisation_y'])
 
-        data = create_lag_features(data, column='unit_sales', lags=10)
+        if 'is_event' in data.columns:
+            data = create_lag_features(data, column='is_event')
+        
+        if 'min_people' in data.columns:
+            data = create_lag_features(data, column='min_people')
+        
+        if 'max_people' in data.columns:
+            data = create_lag_features(data, column='max_people')
 
-        X, y = data.loc[:, data.columns != 'unit_sales'].values, data['unit_sales'].to_numpy()
+        data = create_lag_features(data, column='unit_sales', lags=lag)
 
-        split = int(0.8 * len(X))
+        #X, y = data.loc[:, data.columns != 'unit_sales'].values, data['unit_sales'].to_numpy()
 
-        X_train, X_test, y_train, y_test = X[:split], X[split:], y[:split], y[split:]
+        #split = int(0.8 * len(X))
+
+        # X_train, X_test, y_train, y_test = X[:split], X[split:], y[:split], y[split:]
 
         y_pred = train(X_train, X_test, y_train, y_test)

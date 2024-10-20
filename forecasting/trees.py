@@ -23,11 +23,11 @@ def train(X_train: np.ndarray, X_test: np.ndarray, y_train: np.ndarray, y_test: 
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
     print(f"Test RMSE: {rmse}")
 
-    plt.figure(figsize=(10, 5))
-    plt.plot(np.array([i for i in range(len(y_test))]), y_test, label="Actual")
-    plt.plot(np.array([i for i in range(len(y_test))]), y_pred, label="Predicted")
-    plt.legend()
-    plt.title("Actual vs Predicted Time Series Values")
-    plt.show()
+    # plt.figure(figsize=(10, 5))
+    # plt.plot(np.array([i for i in range(len(y_test))]), y_test, label="Actual")
+    # plt.plot(np.array([i for i in range(len(y_test))]), y_pred, label="Predicted")
+    # plt.legend()
+    # plt.title("Actual vs Predicted Time Series Values")
+    # plt.show()
 
     return y_pred

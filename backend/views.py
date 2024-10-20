@@ -4,6 +4,7 @@ import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.middleware.csrf import get_token
+from forecasting.inference import predict_poland
 
 def index(request):
     csrf_token = get_token(request)
@@ -45,14 +46,30 @@ def fetch_events(request):
     generate_graph(data_good)
 
 
-def process_events(data, data_to_extrapolate):
-    
+def process_events(data, start_date, end_date, days_to_extrapolate):
+    data['data'] = pd.to_datetime(data['date'], format='%d.%m.%Y')
 
-    predictions_weak = data.process_weak
-    predictions_good = data.process_good
+    data = data.drop('city')
+    data = data.drop('event_ID')
 
-    data_weak = data + predictions_weak
-    data_good = data + predictions_good
+    data_weak = data.drop('is_event')
+    data_weak = data_weak.drop('min_people')
+    data_weak = data_weak.drop('max_people')
+
+    data_train = data[(data['date'] >= start_date) & (data['date'] <= end_date)]
+    data_test = data[(data['date'] > end_date) & (data['date'] <= end_date + pd.Timedelta(days=days_to_extrapolate))]
+
+    data_weak_train = data_weak[(data_weak['date'] >= start_date) & (data_weak['date'] <= end_date)]
+    data_weak_test = data_weak[(data_weak['date'] > end_date) & (data_weak['date'] <= end_date + pd.Timedelta(days=days_to_extrapolate))]
+
+    X_train, X_test, y_train, y_test = data_train.loc[:, data_train.columns != 'quantity'].values, data_test.loc[:, data_test.columns != 'quantity'].values, data_train['quantity'].to_numpy(), data_test['quantity'].to_numpy()
+    X_weak_train, X_weak_test, y_weak_train, y_weak_test = data_weak_train.loc[:, data_weak_train.columns != 'quantity'].values, data_weak_test.loc[:, data_weak_test.columns != 'quantity'].values, data_weak_train['quantity'].to_numpy(), data_weak_test['quantity'].to_numpy()
+
+    y_pred_weak = predict_poland(X_train=X_train, X_test=X_test, y_train=y_train, y_test=y_test)
+    y_pred = predict_poland(X_train=X_weak_train, X_test=X_weak_test, y_train=y_weak_train, y_test=y_weak_test)
+
+    data_weak = data + y_pred_weak
+    data_good = data + y_pred
 
     data_weak = select_top_5(data_weak)
     data_good = select_top_5(data_good)
