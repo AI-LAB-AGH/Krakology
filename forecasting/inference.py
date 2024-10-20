@@ -50,7 +50,7 @@ def predict_poland(data_train, data_test, lag=10):
         X_train_ = X_train_.drop(columns=['product'])
 
         for idx, row in X_train_.iterrows():
-            id = row['id']
+            id = row['store_id']
             break
 
         print(X_train_.shape)
