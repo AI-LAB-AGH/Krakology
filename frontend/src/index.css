@@ -5,19 +5,24 @@
 
 html {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    @apply bg-hack-lily
+}
+
+.document {
+    transition-delay: 2s;
+    @apply w-screen h-screen flex flex-col justify-center 
+}
+
+.document.full {
+    transition-delay: 2s;
+    @apply justify-start
 }
 
 .wrapper {
-    @apply flex flex-col w-full bg-hack-grey
+    @apply flex flex-col w-full h-fit bg-hack-grey
 }
 
 .upload-text {
-    @apply text-white text-lg p-5 text-justify
-}
-
-.upload-filename {
-    @apply text-white text-lg m-auto tracking-wide
+    @apply text-white text-lg text-justify mx-auto mt-10 tracking-wide
 }
 
 .upload-buttons {
@@ -31,6 +36,7 @@ html {
     bg-hack-lily
     text-white
     text-xl
+    text-center
     tracking-wide
     border-white
     border-2
@@ -47,4 +53,67 @@ html {
 .button:disabled {
     cursor: none;
     @apply bg-hack-grey text-hack-lily border-white 
+}
+
+
+.analysis {
+    transition: all ease-in-out 1.5s;
+    @apply max-h-full bg-white flex flex-row justify-center py-10 opacity-100
+}
+
+.analysis.hide {
+    transition: all ease-in-out 1s;
+    @apply max-h-0 opacity-0;
+}
+
+.map {
+    width: 500px;
+    height: 500px;
+    @apply bg-white shadow-lg shadow-gray-600 mr-20 mt-10
+}
+
+.dropdown-wrap {
+    @apply flex flex-col
+}
+
+.dropdown {
+    @apply w-full mx-auto
+}
+
+select {
+    border-radius: 35px;
+    @apply p-2
+    my-5
+    text-hack-grey
+    bg-transparent
+    text-lg
+    border-2
+    border-hack-grey
+    tracking-wide
+    w-full
+}
+
+select:hover {
+    cursor: pointer;
+}
+
+option {
+    @apply text-hack-grey
+}
+
+.scroll {
+    max-height: 450px;
+    @apply w-96 mx-auto overflow-y-scroll
+}
+
+.event {
+    @apply m-4 bg-white text-sm text-hack-grey p-4 shadow-lg shadow-gray-200 rounded-md
+}
+
+.event-title {
+    @apply text-hack-grey text-2xl text-center
+}
+
+.event-el {
+    @apply text-hack-grey my-2
 }

@@ -1,9 +1,10 @@
 import { useState } from "react";
+import Analysis from "./Analysis";
 import "./index.css";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [events, setEvents] = useState(null);
+  const [uploaded, setUploaded] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files?.[0];
@@ -18,7 +19,7 @@ function App() {
 
     const formData = new FormData();
     formData.append("csv", selectedFile);
-    await fetch("api/fetch/", {
+    await fetch("api/upload/", {
       method: "POST",
       body: formData,
       headers: {
@@ -28,7 +29,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         if (data) {
-          setEvents(data.events);
+          setUploaded(true);
         }
       });
   };
@@ -42,29 +43,15 @@ function App() {
   };
 
   return (
-    <>
+    <div className={"document" + (uploaded ? " full" : "")}>
       <div className="wrapper">
-        <div className="upload-text">
-          {events
-            ? events.map((event) => (
-                <>
-                  <div className="bg-asseco-blue">{event.type}</div>
-                  <div className="bg-hack-purple">{event.scale}</div>
-                  <div>{event.start}</div>
-                  <div>{event.end}</div>
-                  <div>{event.location}</div>
-                </>
-              ))
-            : ""}
-        </div>
-
-        <p className="upload-filename">
+        <p className="upload-text">
           {selectedFile ? (
             <span>Wybrano:&nbsp;{selectedFile.name}</span>
           ) : (
             <span>
               Wybierz plik zawierający dane dotyczące
-              sprzedaży.&nbsp;Akceptowane formaty to:&nbsp;.csv,&nbsp;.xlsx
+              sprzedaży.&nbsp;Akceptowany format to:&nbsp;.csv
             </span>
           )}
         </p>
@@ -76,6 +63,7 @@ function App() {
           <input
             id="upload"
             type="file"
+            style={{ display: "none" }}
             accept=".csv, .xlsx"
             required
             onChange={handleFileChange}
@@ -90,7 +78,8 @@ function App() {
           </button>
         </div>
       </div>
-    </>
+      <Analysis hide={!uploaded}></Analysis>
+    </div>
   );
 }
 
