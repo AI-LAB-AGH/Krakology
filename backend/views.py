@@ -51,7 +51,9 @@ def fetch_events(request):
     generate_graph(data_good)
 
 
-def process_events(data):
+def process_events(data, data_to_extrapolate):
+    
+
     predictions_weak = data.process_weak
     predictions_good = data.process_good
 
