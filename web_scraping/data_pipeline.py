@@ -121,11 +121,9 @@ class DataPipeline:
             store_x = sale_row["store_localisation_x"]
             store_y = sale_row["store_localisation_y"]
             zabka_sales_df.at[i, "event_ID"] = -1
-            zabka_sales_df.at[i, "event"] = -1
+            zabka_sales_df.at[i, "is_event"] = -1
             zabka_sales_df.at[i, "min_people"] = -1
             zabka_sales_df.at[i, "max_people"] = -1
-            zabka_sales_df.at[i, "event_localisation_x"] = -1
-            zabka_sales_df.at[i, "event_localisation_y"] = -1
 
 
             for j, event_row in concerts_df.iterrows():
@@ -141,7 +139,7 @@ class DataPipeline:
                         break
 
             if nearest_found == True:
-                zabka_sales_df.at[i, "event"] = 1
+                zabka_sales_df.at[i, "is_event"] = 1
                 zabka_sales_df.at[i, "min_people"] = min_people
                 zabka_sales_df.at[i, "max_people"] = max_people
                 zabka_sales_df.at[i, "event_ID"] = nearest_event_id
@@ -168,7 +166,7 @@ class DataPipeline:
 
 def main():
     pipeline = DataPipeline("", "", "")
-    pipeline.merge_event_info_with_dataset()
+    pipeline.merge_event_info_with_dataset("zabka_2024_sales.csv", "concerts_with_scales.csv")
 
 if __name__ == "__main__":
     main()
