@@ -44,7 +44,9 @@
   - plotly
 
 ## Funkcjonalności
-- wyznaczanie interesującego użytkownika zakresu dat i sprzedawanych artykułów
-- 
+- wyznaczanie interesującego użytkownika zakresu dat i kategorii sprzedawanych artykułów
+- wizualizacja predykcji sprzedarzy w niedalekiej przyszłości z uwzględnieniem zescrapowanych dużycze
+- podanie szczegółów konkretnych wydarzeń mogących wpływać na sprzedarz wybranych kategorii produktów
+- zintegrowana z interfejsem mapa z naniesionymi sklepami poddawanymi analizie
   
 ---
