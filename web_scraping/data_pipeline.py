@@ -146,7 +146,7 @@ class DataPipeline:
                 zabka_sales_df.at[i, "event_ID"] = nearest_event_id
                 nearest_found = False
 
-        zabka_sales_df.to_csv("zabka_2024_sales_updated.csv", index=False)
+        zabka_sales_df.to_csv("zabka_2024_sales_updated_more.csv", index=False)
 
     def clean_dates_in_dataset(self):
         df = pd.read_csv(self.file_path)
@@ -167,7 +167,7 @@ class DataPipeline:
 
 def main():
     pipeline = DataPipeline("", "", "")
-    pipeline.merge_event_info_with_dataset("zabka_2024_sales.csv", "concerts_with_scales.csv")
+    pipeline.merge_event_info_with_dataset("zabka_2024_sales_more.csv", "concerts_with_scales.csv")
 
 if __name__ == "__main__":
     main()
