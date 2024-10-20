@@ -5,7 +5,6 @@
 - [Hackology 2024 | Team Krakology](#hackology)
   - [Spis Treści](#spis-treści)
   - [Członkowie Zespołu](#członkowie-zespołu)
-  - [Szczegółowy opis projektu](#szczegółowy-opis-projektu)
   - [Użyte technologie](#użyte-technologie)
     - [Aplikacja webowa:](#aplikacja-webowa)
     - [Przetwarzanie danych / AI:](#przetwarzanie-danych--ai)
@@ -25,9 +24,6 @@
   - Adam Stajek - eata engineering, prompt engineering
   - Maja Byrecka - wizualizacje, data engineering
   - Szymon Majdak - data engineering
-
-## Szczegółowy opis projektu
-
 
 ## Użyte technologie
 
