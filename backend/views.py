@@ -22,30 +22,24 @@ def upload_csv(request):
 
 
 def fetch_events(request):
-    # Read category and start/end dates
-    # Extract from dataframe
-    # Pass into process_events to run through model
-    # Model will return predictions
-    # Find corresponding events by index in events.csv
-    # Return them along with predictions
     start_date, end_date, category = request.POST.get('start'), request.POST.get('end'), request.POST.get('category')
-    print(start_date, end_date, category)
 
-    events = set()
+    events = []
     events_data = pd.read_csv('./backend/events.csv')
     events_data = events_data.to_dict(orient='records')
     sales_data = pd.read_csv('./backend/sales.csv')
 
-    data = sales_data[sales_data['product'] == category]
-    for sale in sales_data:
-        if sale['event_ID'] != 0:
-            events.add(events_data[sale['event_ID']])
-    print(events)
+    sales_data = sales_data[sales_data['product'] == category]
+    data_weak, data_good = process_events(sales_data)
 
-    return JsonResponse({"events": events_data})
+    for idx in sales_data[sales_data['event_ID'] != -1]['event_ID'].unique():
+        event = events_data[int(idx)]
+        event['description'] = 'None'
+        events.append(event)
+
+    return JsonResponse({"events": events})
 
 
-    data_weak, data_good = process_events(data)
 
     generate_graph(data_weak)
     generate_graph(data_good)

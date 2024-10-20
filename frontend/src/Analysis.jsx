@@ -58,6 +58,7 @@ const Analysis = ({ hide }) => {
       .then((data) => {
         if (data) {
           setEvents(data.events);
+          console.log(data.events);
           setLocations(
             data.events.map((event) => [
               event.latitude,
