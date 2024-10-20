@@ -109,7 +109,8 @@ class DataPipeline:
         row_str = ", ".join([f"{col}: {row[col]}" for col in ["artist", "city", "venue", "description"]])
         return row_str
 
-    def merge_event_info_with_dataset(self, sales_df_path, concerts_df_path):
+    @classmethod
+    def merge_event_info_with_dataset(cls, sales_df_path, concerts_df_path):
         zabka_sales_df = pd.read_csv(sales_df_path)
         concerts_df = pd.read_csv(concerts_df_path)
 
