@@ -18,8 +18,12 @@ const Map = ({ locations }) => {
     <LoadScript googleMapsApiKey="AIzaSyDuNZvCLYEJEnx-vjvECR4H1ge-I6e7p8s">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
-        zoom={6}
-        center={{ lat: 51.9194, lng: 19.1451 }}
+        zoom={selected ? 10 : 6}
+        center={
+          selected
+            ? { lat: selected[0], lng: selected[1] }
+            : { lat: 51.9194, lng: 19.1451 }
+        }
       >
         {locations
           ? locations.map((location) => (

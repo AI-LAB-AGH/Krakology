@@ -1,6 +1,7 @@
-import csv
 import numpy as np
 import pandas as pd
+import plotly as ply
+import plotly.graph_objects as go
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.middleware.csrf import get_token
@@ -32,6 +33,11 @@ def fetch_events(request):
     sales_data = pd.read_csv('./backend/sales.csv')
 
     sales_data = sales_data[sales_data['product'] == category]
+    with open('./backend/past.csv', 'w') as f:
+        f.write("date,unit_sales\n")
+        for idx, row in sales_data.iterrows():
+            f.write(f"{row['date']},{row['quantity']}\n")
+
     data_weak, data_good = process_events(sales_data)
 
     for idx in sales_data[sales_data['event_ID'] != -1]['event_ID'].unique():
@@ -39,12 +45,8 @@ def fetch_events(request):
         event['description'] = 'None'
         events.append(event)
 
+    generatePlot('./backend/past.csv', './backend/predictions.csv')
     return JsonResponse({"events": events})
-
-
-
-    generate_graph(data_weak)
-    generate_graph(data_good)
 
 
 def process_events(data, start_date, end_date, days_to_extrapolate):
@@ -92,5 +94,40 @@ def select_top_5(data):
     return data[:5]
 
 
-def generate_graph(data):
-    pass
+def plotGiven(name,title,past_p,avaliable,*args):
+    show_vec=[past_p]
+    for ix, val in enumerate(args):
+        if val==1: 
+            show_vec.append(avaliable[ix])
+    fig = go.Figure(data=show_vec)
+    fig.update_layout(
+    title=title,
+    xaxis_title='Date',
+    yaxis_title='Sold items')
+    fig.update_layout(title=dict(font=dict(size=40),xanchor='center'),title_x=0.5,font=dict(
+        family="Courier New, monospace",
+        size=18,
+        color="RebeccaPurple"
+    ))
+    fig.show()
+    fig.write_html(name)
+
+
+def generatePlot( past_csv, predictions_csv, future_csv=False, show=[1,1,1], name="plot.html",title='Predicted sale'):
+    past = pd.read_csv(past_csv)
+    preds = pd.read_csv(predictions_csv)
+        
+    pred1_p = go.Scatter(x=preds['date'], y=preds['unit_sales_x'], mode='lines', name='Predykcja modelu 1', line=dict(color="#1e6abf"),
+                        hovertemplate='<b>Date:</b> %{x}<br><b>Sold Items:</b> %{y}<extra></extra>')
+    pred2_p = go.Scatter(x=preds['date'], y=preds['unit_sales_y'], mode='lines', name='Predykcja modelu 2', line=dict(color="#ac1ebf"),
+                        hovertemplate='<b>Date:</b> %{x}<br><b>Sold Items:</b> %{y}<extra></extra>')
+    past_p = go.Scatter(x=past['date'], y=past['unit_sales'], mode='lines', name='Przeszłość', line=dict(color="#19ae55"),
+                       hovertemplate='<b>Date:</b> %{x}<br><b>Sold Items:</b> %{y}<extra></extra>')
+
+    if (future_csv is not False): 
+        future_t = pd.read_csv(future_csv)
+        future_p = go.Scatter(x=future_t['date'], y=future_t['unit_sales'], mode='lines', name='Faktyczne wyniki', line=dict(color="#aedf2b"))
+        plotGiven(name,title,past_p,[pred1_p,pred2_p,future_p],*show)
+    else: 
+        show[2]=0
+        plotGiven(name,title,past_p,[pred1_p,pred2_p,0],*show)

@@ -58,7 +58,7 @@ html {
 
 .analysis {
     transition: all ease-in-out 1.5s;
-    @apply max-h-full bg-white flex flex-row justify-center py-10 opacity-100
+    @apply max-h-full bg-white flex flex-row justify-center py-10 opacity-100 overflow-hidden
 }
 
 .analysis.hide {

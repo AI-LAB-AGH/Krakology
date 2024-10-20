@@ -63,7 +63,7 @@ const Analysis = ({ hide }) => {
             data.events.map((event) => [
               event.latitude,
               event.longitude,
-              "Koncert",
+              event.artist,
             ])
           );
         }
@@ -84,7 +84,7 @@ const Analysis = ({ hide }) => {
         <Map locations={locations}></Map>
       </div>
 
-      <div className="dropdown-wrap flex flex-col">
+      <div className="dropdown-wrap">
         <div className="dropdown">
           <select value={category} onChange={handleCategoryChange}>
             <option value="Wybierz kategorię" disabled>
@@ -96,7 +96,7 @@ const Analysis = ({ hide }) => {
           </select>
         </div>
 
-        <div className="dropdown">
+        <div className="dropdown flex flex-col justify-center">
           Data początkowa: &nbsp;
           <input
             type="date"
@@ -118,11 +118,14 @@ const Analysis = ({ hide }) => {
             max="2018-12-31"
             onChange={handleEndChange}
           />
-          <div>
-            <button className="button" onClick={analyse}>
-              Generuj
-            </button>
-          </div>
+          <br></br>
+          <button
+            className="button"
+            style={{ marginLeft: "auto", marginRight: "auto", marginTop: 0 }}
+            onClick={analyse}
+          >
+            Generuj
+          </button>
         </div>
 
         <div className="scroll">
