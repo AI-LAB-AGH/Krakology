@@ -33,19 +33,22 @@ def fetch_events(request):
     sales_data = pd.read_csv('./backend/sales.csv')
 
     sales_data = sales_data[sales_data['product'] == category]
-    with open('./backend/past.csv', 'w') as f:
-        f.write("date,unit_sales\n")
-        for idx, row in sales_data.iterrows():
-            f.write(f"{row['date']},{row['quantity']}\n")
+    shops = sales_data['store_localisation_x'].unique()
+    for idx, shop in enumerate(shops):
+        with open(f'./backend/past_{idx}.csv', 'w') as f:
+            f.write("date,unit_sales\n")
+            for idx, row in sales_data[sales_data['store_localisation_x']==shop].iterrows():
+                f.write(f"{row['date']},{row['quantity']}\n")
 
-    data_weak, data_good = process_events(sales_data)
+    # data_weak, data_good = process_events(sales_data)
 
     for idx in sales_data[sales_data['event_ID'] != -1]['event_ID'].unique():
         event = events_data[int(idx)]
         event['description'] = 'None'
         events.append(event)
 
-    generatePlot('./backend/past.csv', './backend/predictions.csv')
+    for idx, shop in enumerate(shops):
+        generatePlot(f'./backend/past_{idx}.csv', './backend/predictions.csv')
     return JsonResponse({"events": events})
 
 
@@ -61,11 +64,11 @@ def process_events(data, start_date, end_date, days_to_extrapolate):
     data_weak = data_weak.drop(columns=['min_people'])
     data_weak = data_weak.drop(columns=['max_people'])
 
-    data_train = data[(data['date'] >= start_date) & (data['date'] <= end_date)]
-    data_test = data[(data['date'] > end_date) & (data['date'] <= end_date + pd.Timedelta(days=days_to_extrapolate))]
+#     data_train = data[(data['date'] >= start_date) & (data['date'] <= end_date)]
+#     data_test = data[(data['date'] > end_date) & (data['date'] <= end_date + pd.Timedelta(days=days_to_extrapolate))]
 
-    data_weak_train = data_weak[(data_weak['date'] >= start_date) & (data_weak['date'] <= end_date)]
-    data_weak_test = data_weak[(data_weak['date'] > end_date) & (data_weak['date'] <= end_date + pd.Timedelta(days=days_to_extrapolate))]
+#     data_weak_train = data_weak[(data_weak['date'] >= start_date) & (data_weak['date'] <= end_date)]
+#     data_weak_test = data_weak[(data_weak['date'] > end_date) & (data_weak['date'] <= end_date + pd.Timedelta(days=days_to_extrapolate))]
 
     y_pred_weak = predict_poland(data_weak_train, data_weak_test)
     y_pred = predict_poland(data_train, data_test)
@@ -113,7 +116,7 @@ def plotGiven(name,title,past_p,avaliable,*args):
     fig.write_html(name)
 
 
-def generatePlot( past_csv, predictions_csv, future_csv=False, show=[1,1,1], name="plot.html",title='Predicted sale'):
+def generatePlot( past_csv, predictions_csv, future_csv=False, show=[1,1,1], name="frontend/public/plot.html",title='Predicted sale'):
     past = pd.read_csv(past_csv)
     preds = pd.read_csv(predictions_csv)
         

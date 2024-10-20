@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Map from "./Map";
 import "./index.css";
+import { useEffect } from "react";
 
 const Analysis = ({ hide }) => {
   const categories = {
@@ -58,7 +59,6 @@ const Analysis = ({ hide }) => {
       .then((data) => {
         if (data) {
           setEvents(data.events);
-          console.log(data.events);
           setLocations(
             data.events.map((event) => [
               event.latitude,
@@ -79,81 +79,80 @@ const Analysis = ({ hide }) => {
   };
 
   return (
-    <div className={"analysis" + (hide ? " hide" : "")}>
-      <div className="map">
-        <Map locations={locations}></Map>
+    <>
+      <div className={"analysis" + (hide ? " hide" : "")}>
+        <div className="map">
+          <Map locations={locations}></Map>
+        </div>
+
+        <div className="dropdown-wrap">
+          <div className="dropdown">
+            <select value={category} onChange={handleCategoryChange}>
+              <option value="Wybierz kategorię" disabled>
+                -&nbsp;Wybierz kategorię&nbsp;-
+              </option>
+              {Object.entries(categories).map(([key, value]) => (
+                <option value={key}>{value}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="dropdown flex flex-col justify-center">
+            Data początkowa: &nbsp;
+            <input
+              type="date"
+              id="start"
+              name="trip-start"
+              value={startDate}
+              min="2018-01-01"
+              max="2018-12-31"
+              onChange={handleStartChange}
+            />
+            <br></br>
+            Data końcowa: &nbsp;
+            <input
+              type="date"
+              id="end"
+              name="trip-start"
+              value={endDate}
+              min="2018-01-01"
+              max="2018-12-31"
+              onChange={handleEndChange}
+            />
+            <br></br>
+            <button
+              className="button"
+              style={{ marginLeft: "auto", marginRight: "auto", marginTop: 0 }}
+              onClick={analyse}
+            >
+              Generuj
+            </button>
+          </div>
+
+          <div className="scroll">
+            {events
+              ? events.map((event) => (
+                  <div className="event">
+                    <div className="event-title">{event.artist}</div>
+                    <div className="event-el">
+                      <b>Lokalizacja:</b> {event.venue}, {event.city}
+                    </div>
+                    <div className="event-el">
+                      <b>Skala wydarzenia:</b> {event.min_people} -{" "}
+                      {event.max_people} osób
+                    </div>
+                    <div className="event-el">
+                      <b>Położenie punktu sprzedaży:</b> (
+                      {Math.round(event.latitude * 1000) / 1000},{" "}
+                      {Math.round(event.longitude * 1000) / 1000})
+                    </div>
+                  </div>
+                ))
+              : ""}
+          </div>
+        </div>
       </div>
-
-      <div className="dropdown-wrap">
-        <div className="dropdown">
-          <select value={category} onChange={handleCategoryChange}>
-            <option value="Wybierz kategorię" disabled>
-              -&nbsp;Wybierz kategorię&nbsp;-
-            </option>
-            {Object.entries(categories).map(([key, value]) => (
-              <option value={key}>{value}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="dropdown flex flex-col justify-center">
-          Data początkowa: &nbsp;
-          <input
-            type="date"
-            id="start"
-            name="trip-start"
-            value={startDate}
-            min="2018-01-01"
-            max="2018-12-31"
-            onChange={handleStartChange}
-          />
-          <br></br>
-          Data końcowa: &nbsp;
-          <input
-            type="date"
-            id="end"
-            name="trip-start"
-            value={endDate}
-            min="2018-01-01"
-            max="2018-12-31"
-            onChange={handleEndChange}
-          />
-          <br></br>
-          <button
-            className="button"
-            style={{ marginLeft: "auto", marginRight: "auto", marginTop: 0 }}
-            onClick={analyse}
-          >
-            Generuj
-          </button>
-        </div>
-
-        <div className="scroll">
-          {events
-            ? events.map((event) => (
-                <div className="event">
-                  <div className="event-title">{event.artist}</div>
-                  <div className="event-el">
-                    <b>Lokalizacja:</b> {event.venue}, {event.city}
-                  </div>
-                  <div className="event-el">
-                    <b>Skala wydarzenia:</b> {event.min_people} -{" "}
-                    {event.max_people} osób
-                  </div>
-                  {/* <div className="event-el">
-                    <b>Dotyczy:</b> {categories[event.product]}
-                  </div> */}
-                  <div className="event-el">
-                    <b>Położenie punktu sprzedaży:</b> (
-                    {Math.round(event.latitude * 1000) / 1000},{" "}
-                    {Math.round(event.longitude * 1000) / 1000})
-                  </div>
-                </div>
-              ))
-            : ""}
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
