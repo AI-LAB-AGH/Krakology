@@ -6,7 +6,7 @@ export default {
       colors: {
         "asseco-blue": "#4ec2ed",
         "hack-purple": "#bc5cf2",
-        "hack-lily": "#ECCBFF",
+        "hack-lily": "#ECB3FF",
         "hack-grey": "#070F34",
       },
     },

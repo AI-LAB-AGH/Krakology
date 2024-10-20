@@ -21,6 +21,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name="index"),
+    path('api/upload/', views.upload_csv, name="upload"),
     path('api/fetch/', views.fetch_events, name="fetch"),
     path('api/process/', views.process_events, name="process")
 ]
