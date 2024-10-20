@@ -47,11 +47,11 @@ def segment_data(df: pd.DataFrame, column_name: str) -> List[pd.DataFrame]:
     
     return grouped_dfs
 
-def create_lag_features(data, column, lags=10):
-    df = pd.DataFrame(data[column])
+def create_lag_features(data, column, lags=5):
+    df = data.copy()
     for i in range(1, lags + 1):
-        df[f'lag_{i}'] = df[column].shift(i)
-    df.dropna(inplace=True)
+        df[f'{column}_lag_{i}'] = df[column].shift(i)
+    # df.dropna(inplace=True)
     return df
 
 def create_tabular_dataset(data, lags=10):

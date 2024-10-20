@@ -32,34 +32,60 @@ def predict_equador(item):
             y_pred = train(X_train, X_test, y_train, y_test)
 
 
-def predict_poland(X_train, y_train, X_test, y_test, lag=10):
-    df = pd.read_csv('data/equador.csv')
-    df['date'] = pd.to_datetime(df['date'])
-    df = df.sort_values(by='date')
+def predict_poland(data_train, data_test, lag=10):
+    X_train = data_train
+    X_test = data_test
 
-    dates = df['date'].values
-    df = df.drop(columns=['date'])
+    X_train = X_train.drop(columns=['date'])
+    X_test = X_test.drop(columns=['date'])
 
-    for x in df['store_localisation_x'].unique():
-        df = df.loc[df['store_localisation_x'] == x]
-        data = df.drop(columns=['store_localisation_x'])
-        data = data.drop(columns=['store_localisation_y'])
+    preds = []
 
-        if 'is_event' in data.columns:
-            data = create_lag_features(data, column='is_event')
+    print(X_train['store_localisation_x'].unique())
+
+    for x in X_train['store_localisation_x'].unique():
+        X_train_ = X_train.loc[X_train['store_localisation_x'] == x]
+        X_train_ = X_train_.drop(columns=['store_localisation_x'])
+        X_train_ = X_train_.drop(columns=['store_localisation_y'])
+        X_train_ = X_train_.drop(columns=['product'])
+
+        for idx, row in X_train_.iterrows():
+            id = row['id']
+            break
+
+        print(X_train_.shape)
+        print(X_train_.columns)
+
+        if 'is_event' in X_train_.columns:
+            X_train_ = create_lag_features(X_train_, column='is_event')
+
+        if 'min_people' in X_train_.columns:
+            X_train_ = create_lag_features(X_train_, column='min_people')
         
-        if 'min_people' in data.columns:
-            data = create_lag_features(data, column='min_people')
+        if 'max_people' in X_train_.columns:
+            X_train_ = create_lag_features(X_train_, column='max_people')
+
+        X_test_ = X_test.loc[X_test['store_localisation_x'] == x]
+        X_test_ = X_test_.drop(columns=['store_localisation_x'])
+        X_test_ = X_test_.drop(columns=['store_localisation_y'])
+        X_test_ = X_test_.drop(columns=['product'])
+
+        print(f'Test shape pretransform: {X_test_.shape}')
+
+        if 'is_event' in X_test_.columns:
+            X_test_ = create_lag_features(X_test_, column='is_event')
         
-        if 'max_people' in data.columns:
-            data = create_lag_features(data, column='max_people')
+        print(f'Test shape posttransform: {X_test_.shape}')
 
-        data = create_lag_features(data, column='unit_sales', lags=lag)
+        if 'min_people' in X_test_.columns:
+            X_test_ = create_lag_features(X_test_, column='min_people')
+        
+        if 'max_people' in X_test_.columns:
+            X_test_ = create_lag_features(X_test_, column='max_people')
 
-        #X, y = data.loc[:, data.columns != 'unit_sales'].values, data['unit_sales'].to_numpy()
+        X_train_, X_test_, y_train_, y_test_ = X_train_.loc[:, X_train_.columns != 'quantity'].values, X_test_.loc[:, X_test_.columns != 'quantity'].values, X_train_['quantity'].to_numpy(), X_test_['quantity'].to_numpy()
 
-        #split = int(0.8 * len(X))
+        y_pred = train(X_train_, X_test_, y_train_, y_test_)
+        preds.append([id, y_pred])
 
-        # X_train, X_test, y_train, y_test = X[:split], X[split:], y[:split], y[split:]
-
-        y_pred = train(X_train, X_test, y_train, y_test)
+    return preds
